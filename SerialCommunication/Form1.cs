@@ -130,6 +130,15 @@ namespace SerialCommunication
                 {
                     timerOefening3.Enabled = false;
                 }
+
+                if (tabControl.SelectedTab == tabPageOefening4)
+                {
+                    timerOefening4.Enabled = true;
+                }
+                else
+                {
+                    timerOefening4.Enabled = false;
+                }
             }
             catch (Exception)
             {
@@ -169,6 +178,33 @@ namespace SerialCommunication
             }
         }
 
+        private void timerOefening4_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialPortArduino != null && serialPortArduino.IsOpen)
+                {
+                    // Clear previous data from Arduino
+                    try { serialPortArduino.ReadExisting(); } catch { }
+
+                    // Request analog 0 value
+                    serialPortArduino.WriteLine("analog 0");
+
+                    string antwoord = serialPortArduino.ReadLine().Trim();
+
+                    // extract numeric value if the reply contains extra text
+                    var match = System.Text.RegularExpressions.Regex.Match(antwoord, "\\d+");
+                    string value = match.Success ? match.Value : antwoord;
+
+                    labelAnalog0.Text = value;
+                }
+            }
+            catch (Exception ex)
+            {
+                try { labelStatus.Text = "Error: " + ex.Message; } catch { }
+            }
+        }
+
         private void trackBarPWM9_Scroll(object sender, EventArgs e)
         {
             try
@@ -176,6 +212,22 @@ namespace SerialCommunication
                 if (serialPortArduino != null && serialPortArduino.IsOpen)
                 {
                     string commando = $"set pwm9 {trackBarPWM9.Value}";
+                    serialPortArduino.WriteLine(commando);
+                }
+            }
+            catch (Exception ex)
+            {
+                try { labelStatus.Text = "Error: " + ex.Message; } catch { }
+            }
+        }
+
+        private void checkBoxDigital2_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialPortArduino != null && serialPortArduino.IsOpen)
+                {
+                    string commando = checkBoxDigital2.Checked ? "set d2 high" : "set d2 low";
                     serialPortArduino.WriteLine(commando);
                 }
             }

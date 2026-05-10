@@ -35,6 +35,7 @@
             this.comboBoxPoort = new System.Windows.Forms.ComboBox();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.timerOefening3 = new System.Windows.Forms.Timer(this.components);
+            this.timerOefening4 = new System.Windows.Forms.Timer(this.components);
             this.tabPageInstellingen = new System.Windows.Forms.TabPage();
             this.checkBoxDtrEnable = new System.Windows.Forms.CheckBox();
             this.checkBoxRtsEnable = new System.Windows.Forms.CheckBox();
@@ -583,6 +584,7 @@
             this.checkBoxDigital2.TabIndex = 0;
             this.checkBoxDigital2.Text = "Digital 2";
             this.checkBoxDigital2.UseVisualStyleBackColor = true;
+            this.checkBoxDigital2.CheckedChanged += new System.EventHandler(this.checkBoxDigital2_CheckedChanged);
             // 
             // tabPageOefening2
             // 
@@ -876,6 +878,12 @@
             this.timerOefening3.Enabled = false;
             this.timerOefening3.Tick += new System.EventHandler(this.timerOefening3_Tick);
             // 
+            // timerOefening4
+            // 
+            this.timerOefening4.Interval = 1000;
+            this.timerOefening4.Enabled = false;
+            this.timerOefening4.Tick += new System.EventHandler(this.timerOefening4_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -988,6 +996,7 @@
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel labelStatus;
         private System.Windows.Forms.Timer timerOefening3;
+        private System.Windows.Forms.Timer timerOefening4;
         private System.IO.Ports.SerialPort serialPortArduino;
     }
 }
