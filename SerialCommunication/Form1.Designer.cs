@@ -664,6 +664,7 @@
             this.trackBarPWM9.Size = new System.Drawing.Size(494, 90);
             this.trackBarPWM9.TabIndex = 0;
             this.trackBarPWM9.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBarPWM9.Scroll += new System.EventHandler(this.trackBarPWM9_Scroll);
             // 
             // pictureBox2
             // 

@@ -168,5 +168,21 @@ namespace SerialCommunication
                 try { labelStatus.Text = "Error: " + ex.Message; } catch { }
             }
         }
+
+        private void trackBarPWM9_Scroll(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialPortArduino != null && serialPortArduino.IsOpen)
+                {
+                    string commando = $"set pwm9 {trackBarPWM9.Value}";
+                    serialPortArduino.WriteLine(commando);
+                }
+            }
+            catch (Exception ex)
+            {
+                try { labelStatus.Text = "Error: " + ex.Message; } catch { }
+            }
+        }
     }
 }
