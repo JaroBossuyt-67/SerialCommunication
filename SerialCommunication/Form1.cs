@@ -117,5 +117,56 @@ namespace SerialCommunication
                 buttonConnect.Text = "Connect";
             }
         }
+
+        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (tabControl.SelectedTab == tabPageOefening3)
+                {
+                    timerOefening3.Enabled = true;
+                }
+                else
+                {
+                    timerOefening3.Enabled = false;
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void timerOefening3_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialPortArduino != null && serialPortArduino.IsOpen)
+                {
+                    // Clear any previous data
+                    try { serialPortArduino.ReadExisting(); } catch { }
+
+                    // digital 5
+                    serialPortArduino.WriteLine("digital 5");
+                    string antwoord5 = serialPortArduino.ReadLine().Trim();
+                    radioButtonDigital5.Checked = (antwoord5 == "1");
+
+                    // digital 6
+                    try { serialPortArduino.ReadExisting(); } catch { }
+                    serialPortArduino.WriteLine("digital 6");
+                    string antwoord6 = serialPortArduino.ReadLine().Trim();
+                    radioButtonDigital6.Checked = (antwoord6 == "1");
+
+                    // digital 7
+                    try { serialPortArduino.ReadExisting(); } catch { }
+                    serialPortArduino.WriteLine("digital 7");
+                    string antwoord7 = serialPortArduino.ReadLine().Trim();
+                    radioButtonDigital7.Checked = (antwoord7 == "1");
+                }
+            }
+            catch (Exception ex)
+            {
+                try { labelStatus.Text = "Error: " + ex.Message; } catch { }
+            }
+        }
     }
 }

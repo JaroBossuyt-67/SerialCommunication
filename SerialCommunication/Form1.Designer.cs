@@ -34,6 +34,7 @@
             this.labelPoort = new System.Windows.Forms.Label();
             this.comboBoxPoort = new System.Windows.Forms.ComboBox();
             this.tabControl = new System.Windows.Forms.TabControl();
+            this.timerOefening3 = new System.Windows.Forms.Timer(this.components);
             this.tabPageInstellingen = new System.Windows.Forms.TabPage();
             this.checkBoxDtrEnable = new System.Windows.Forms.CheckBox();
             this.checkBoxRtsEnable = new System.Windows.Forms.CheckBox();
@@ -173,6 +174,7 @@
             this.tabControl.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             this.tabControl.Size = new System.Drawing.Size(1568, 802);
             this.tabControl.TabIndex = 9;
             // 
@@ -867,6 +869,12 @@
             this.serialPortArduino.ReadTimeout = 1000;
             this.serialPortArduino.WriteTimeout = 1000;
             // 
+            // timerOefening3
+            // 
+            this.timerOefening3.Interval = 1000;
+            this.timerOefening3.Enabled = false;
+            this.timerOefening3.Tick += new System.EventHandler(this.timerOefening3_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -978,6 +986,7 @@
         internal System.Windows.Forms.PictureBox pictureBox5;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel labelStatus;
+        private System.Windows.Forms.Timer timerOefening3;
         private System.IO.Ports.SerialPort serialPortArduino;
     }
 }
