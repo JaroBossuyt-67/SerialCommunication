@@ -36,6 +36,7 @@
             this.tabControl = new System.Windows.Forms.TabControl();
             this.timerOefening3 = new System.Windows.Forms.Timer(this.components);
             this.timerOefening4 = new System.Windows.Forms.Timer(this.components);
+            this.timerOefening5 = new System.Windows.Forms.Timer(this.components);
             this.tabPageInstellingen = new System.Windows.Forms.TabPage();
             this.checkBoxDtrEnable = new System.Windows.Forms.CheckBox();
             this.checkBoxRtsEnable = new System.Windows.Forms.CheckBox();
@@ -884,6 +885,12 @@
             this.timerOefening4.Enabled = false;
             this.timerOefening4.Tick += new System.EventHandler(this.timerOefening4_Tick);
             // 
+            // timerOefening5
+            // 
+            this.timerOefening5.Interval = 1000;
+            this.timerOefening5.Enabled = false;
+            this.timerOefening5.Tick += new System.EventHandler(this.timerOefening5_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -997,6 +1004,7 @@
         private System.Windows.Forms.ToolStripStatusLabel labelStatus;
         private System.Windows.Forms.Timer timerOefening3;
         private System.Windows.Forms.Timer timerOefening4;
+        private System.Windows.Forms.Timer timerOefening5;
         private System.IO.Ports.SerialPort serialPortArduino;
     }
 }

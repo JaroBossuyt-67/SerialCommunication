@@ -139,6 +139,15 @@ namespace SerialCommunication
                 {
                     timerOefening4.Enabled = false;
                 }
+
+                if (tabControl.SelectedTab == tabPageOefening5)
+                {
+                    timerOefening5.Enabled = true;
+                }
+                else
+                {
+                    timerOefening5.Enabled = false;
+                }
             }
             catch (Exception)
             {
@@ -197,6 +206,54 @@ namespace SerialCommunication
                     string value = match.Success ? match.Value : antwoord;
 
                     labelAnalog0.Text = value;
+                }
+            }
+            catch (Exception ex)
+            {
+                try { labelStatus.Text = "Error: " + ex.Message; } catch { }
+            }
+        }
+
+        private void timerOefening5_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialPortArduino != null && serialPortArduino.IsOpen)
+                {
+                    // Read desired temperature from analog pin 0
+                    try { serialPortArduino.ReadExisting(); } catch { }
+                    serialPortArduino.WriteLine("analog 0");
+                    string antwoord0 = serialPortArduino.ReadLine().Trim();
+                    var match0 = System.Text.RegularExpressions.Regex.Match(antwoord0, "\\d+");
+                    int raw0 = 0;
+                    if (match0.Success) Int32.TryParse(match0.Value, out raw0);
+
+                    // scale 0..1023 -> 5..45 °C
+                    double slopeDesired = 40.0 / 1023.0; // (45-5)/1023
+                    double offsetDesired = 5.0;
+                    double desiredTemp = slopeDesired * raw0 + offsetDesired;
+                    string desiredText = Math.Round(desiredTemp, 1).ToString("0.0") + " °C";
+                    labelGewensteTemp.Text = desiredText;
+
+                    // Read current temperature from analog pin 1
+                    try { serialPortArduino.ReadExisting(); } catch { }
+                    serialPortArduino.WriteLine("analog 1");
+                    string antwoord1 = serialPortArduino.ReadLine().Trim();
+                    var match1 = System.Text.RegularExpressions.Regex.Match(antwoord1, "\\d+");
+                    int raw1 = 0;
+                    if (match1.Success) Int32.TryParse(match1.Value, out raw1);
+
+                    // scale 0..1023 -> 0..500 °C
+                    double slopeCurrent = 500.0 / 1023.0;
+                    double offsetCurrent = 0.0;
+                    double currentTemp = slopeCurrent * raw1 + offsetCurrent;
+                    string currentText = Math.Round(currentTemp, 1).ToString("0.0") + " °C";
+                    labelHuidigeTemp.Text = currentText;
+
+                    // Control LED on digital pin 2: ON when current < desired
+                    try { serialPortArduino.ReadExisting(); } catch { }
+                    string cmd = (currentTemp < desiredTemp) ? "set d2 high" : "set d2 low";
+                    serialPortArduino.WriteLine(cmd);
                 }
             }
             catch (Exception ex)
