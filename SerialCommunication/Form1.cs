@@ -71,6 +71,21 @@ namespace SerialCommunication
             buttonConnect.Text = "Connect";
             labelStatus.Text = "Verbinding verbroken";
 
+            // zet relevante controls uit en clear state zodat gebruiker ziet dat verbinding weg is
+            try
+            {
+                checkBoxDigital2.Checked = false;
+                checkBoxDigital3.Checked = false;
+                checkBoxDigital4.Checked = false;
+
+                checkBoxDigital2.Enabled = false;
+                checkBoxDigital3.Enabled = false;
+                checkBoxDigital4.Enabled = false;
+
+                trackBarPWM9.Enabled = false;
+            }
+            catch { }
+
             MessageBox.Show(
                 "De verbinding met de Arduino is verbroken.\n\n" + foutmelding,
                 "Serial Error",
@@ -126,6 +141,16 @@ namespace SerialCommunication
                         buttonConnect.Text = "Disconnect";
                         labelStatus.Text = "Status: Connected";
 
+                        // zet controls weer aan omdat verbinding er is
+                        try
+                        {
+                            checkBoxDigital2.Enabled = true;
+                            checkBoxDigital3.Enabled = true;
+                            checkBoxDigital4.Enabled = true;
+
+                            trackBarPWM9.Enabled = true;
+                        }
+                        catch { }
                     }
                     else
                     {
