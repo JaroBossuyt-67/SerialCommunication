@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
@@ -50,6 +51,31 @@ namespace SerialCommunication
             {
                 if (comboBoxPoort.Items.Count > 0) comboBoxPoort.SelectedIndex = 0;
             }
+        }
+        private void VerbindingVerloren(string foutmelding)
+        {
+            try
+            {
+                timerOefening3.Stop();
+                timerOefening4.Stop();
+                timerOefening5.Stop();
+
+                if (serialPortArduino.IsOpen)
+                {
+                    serialPortArduino.Close();
+                }
+            }
+            catch { }
+
+            radioButtonVerbonden.Checked = false;
+            buttonConnect.Text = "Connect";
+            labelStatus.Text = "Verbinding verbroken";
+
+            MessageBox.Show(
+                "De verbinding met de Arduino is verbroken.\n\n" + foutmelding,
+                "Serial Error",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
         }
 
         private void buttonConnect_Click(object sender, EventArgs e)
@@ -216,51 +242,71 @@ namespace SerialCommunication
 
         private void timerOefening5_Tick(object sender, EventArgs e)
         {
+            if (serialPortArduino == null || !serialPortArduino.IsOpen)
+            {
+                // als poort niet open is, status tonen en timers stoppen
+                VerbindingVerloren("Serial port gesloten of niet beschikbaar");
+                return;
+            }
+
             try
             {
-                if (serialPortArduino != null && serialPortArduino.IsOpen)
-                {
-                    // Read desired temperature from analog pin 0
-                    try { serialPortArduino.ReadExisting(); } catch { }
-                    serialPortArduino.WriteLine("analog 0");
-                    string antwoord0 = serialPortArduino.ReadLine().Trim();
-                    var match0 = System.Text.RegularExpressions.Regex.Match(antwoord0, "\\d+");
-                    int raw0 = 0;
-                    if (match0.Success) Int32.TryParse(match0.Value, out raw0);
+                // --- 1. Clean out any old garbage in the wire before asking
+                serialPortArduino.DiscardInBuffer();
 
-                    // scale 0..1023 -> 5..45 °C
-                    double slopeDesired = 40.0 / 1023.0; // (45-5)/1023
-                    double offsetDesired = 5.0;
-                    double desiredTemp = slopeDesired * raw0 + offsetDesired;
-                    string desiredText = Math.Round(desiredTemp, 1).ToString("0.0") + " °C";
-                    labelGewensteTemp.Text = desiredText;
+                // --- 2. Vraag potentiometer (gewenste temp)
+                serialPortArduino.WriteLine("get a0");
+                Thread.Sleep(50);
+                string lijn1 = serialPortArduino.ReadLine();
 
-                    // Read current temperature from analog pin 1
-                    try { serialPortArduino.ReadExisting(); } catch { }
-                    serialPortArduino.WriteLine("analog 1");
-                    string antwoord1 = serialPortArduino.ReadLine().Trim();
-                    var match1 = System.Text.RegularExpressions.Regex.Match(antwoord1, "\\d+");
-                    int raw1 = 0;
-                    if (match1.Success) Int32.TryParse(match1.Value, out raw1);
+                // IF there is no colon, ignore it and stop trying for this second!
+                if (!lijn1.Contains(":")) return;
 
-                    // scale 0..1023 -> 0..500 °C
-                    double slopeCurrent = 500.0 / 1023.0;
-                    double offsetCurrent = 0.0;
-                    double currentTemp = slopeCurrent * raw1 + offsetCurrent;
-                    string currentText = Math.Round(currentTemp, 1).ToString("0.0") + " °C";
-                    labelHuidigeTemp.Text = currentText;
+                int potWaarde = int.Parse(lijn1.Split(':')[1].Trim());
 
-                    // Control LED on digital pin 2: ON when current < desired
-                    try { serialPortArduino.ReadExisting(); } catch { }
-                    string cmd = (currentTemp < desiredTemp) ? "set d2 high" : "set d2 low";
-                    serialPortArduino.WriteLine(cmd);
-                }
+                // --- 3. Vraag LM35 (huidige temp)
+                serialPortArduino.WriteLine("get a1");
+                Thread.Sleep(50);
+                string lijn2 = serialPortArduino.ReadLine();
+
+                // IF there is no colon, ignore it and stop trying for this second!
+                if (!lijn2.Contains(":")) return;
+
+                int tempWaarde = int.Parse(lijn2.Split(':')[1].Trim());
+
+                // --- 4. Verwerken
+                VerwerkData(potWaarde, tempWaarde);
             }
             catch (Exception ex)
             {
-                try { labelStatus.Text = "Error: " + ex.Message; } catch { }
+                // voorkomt crash
+                VerbindingVerloren(ex.Message);
+
             }
         }
+        private void VerwerkData(int potWaarde, int tempWaarde)
+        {
+            // --- GEWENSTE TEMPERATUUR (5 → 45 °C)
+            double gewensteTemp = (40.0 / 1023.0) * potWaarde + 5;
+
+            // --- HUIDIGE TEMPERATUUR (LM35 → 0 → 500 °C)
+            double huidigeTemp = (500.0 / 1023.0) * tempWaarde;
+
+            // --- TONEN OP SCHERM (1 cijfer na komma)
+            labelGewensteTemp.Text = gewensteTemp.ToString("0.0") + " °C";
+            labelHuidigeTemp.Text = huidigeTemp.ToString("0.0") + " °C";
+
+            // --- LED LOGICA
+            if (huidigeTemp < gewensteTemp)
+            {
+                serialPortArduino.WriteLine("set d2 1"); // LED AAN
+            }
+            else
+            {
+                serialPortArduino.WriteLine("set d2 0"); // LED UIT
+            }
+        }
+    
 
         private void trackBarPWM9_Scroll(object sender, EventArgs e)
         {
