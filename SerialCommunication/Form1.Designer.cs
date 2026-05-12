@@ -878,7 +878,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(1552, 755);
             this.tabPage1.TabIndex = 6;
-            this.tabPage1.Text = "oefeing 6";
+            this.tabPage1.Text = "Oefening 6";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // labelStatuss
@@ -886,9 +886,9 @@
             this.labelStatuss.AutoSize = true;
             this.labelStatuss.Location = new System.Drawing.Point(974, 398);
             this.labelStatuss.Name = "labelStatuss";
-            this.labelStatuss.Size = new System.Drawing.Size(82, 25);
+            this.labelStatuss.Size = new System.Drawing.Size(0, 50);
             this.labelStatuss.TabIndex = 6;
-            this.labelStatuss.Text = "label16";
+            this.labelStatuss.Click += new System.EventHandler(this.labelStatuss_Click);
             // 
             // labelHuidigTemp
             // 

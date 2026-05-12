@@ -23,11 +23,23 @@ namespace SerialCommunication
         // knop debounce/helpers
         private bool lastButtonState = false;
         private System.DateTime lastButtonChange = System.DateTime.MinValue;
-        private const int buttonStableMs = 300; // ms
+        private const int buttonStableMs = 50; // ms (debounce reduced for responsiveness)
         private bool lastEffectiveButton = false;
 
         // houd vorige toestand bij om onnodige commando's te vermijden
         private int vorigeToestand = -1;
+
+        // voorkom dat bij disconnect meerdere popups of handelingen gebeuren
+        private bool connectionLostNotified = false;
+
+        // knop state tracking voor betrouwbare drukknop-detectie
+        private bool idleButtonLevelKnown = false; // true zodra we een stabiele idle-level hebben gelezen
+        private bool idleButtonLevel = false; // welke raw waarde betekent 'niet ingedrukt'
+        private bool lastStableButton = false; // laatst bekende stabiele raw waarde
+        private DateTime pressStartTime = DateTime.MinValue; // wanneer de stabiele druk start
+        private DateTime lastPressAt = DateTime.MinValue; // voorkomt dubbele triggers
+        private const int minPressMs = 30; // minimale geldige drukduur
+        private const int maxPressMs = 1000; // maximale geldige drukduur
 
         public Form1()
         {
@@ -75,11 +87,13 @@ namespace SerialCommunication
         {
             try
             {
-                timerOefening3.Stop();
-                timerOefening4.Stop();
-                timerOefening5.Stop();
+                // stop alle timers zodat er geen herhaalde handlers meer lopen
+                try { timerOefening3.Stop(); } catch { }
+                try { timerOefening4.Stop(); } catch { }
+                try { timerOefening5.Stop(); } catch { }
+                try { timerTemperatuurAlarm.Stop(); } catch { }
 
-                if (serialPortArduino.IsOpen)
+                if (serialPortArduino != null && serialPortArduino.IsOpen)
                 {
                     serialPortArduino.Close();
                 }
@@ -105,6 +119,12 @@ namespace SerialCommunication
             }
             catch { }
 
+            // voorkom meerdere popups als meerdere timers dicht bij elkaar detecteren
+            if (connectionLostNotified)
+                return;
+
+            connectionLostNotified = true;
+
             MessageBox.Show(
                 "De verbinding met de Arduino is verbroken.\n\n" + foutmelding,
                 "Serial Error",
@@ -119,6 +139,8 @@ namespace SerialCommunication
                 if (serialPortArduino.IsOpen)
                 {
                     serialPortArduino.Close();
+                    // reset notification flag when user intentionally disconnects
+                    connectionLostNotified = false;
                     radioButtonVerbonden.Checked = false;
                     buttonConnect.Text = "Connect";
                     labelStatus.Text = "Status: Disconnected";
@@ -159,6 +181,7 @@ namespace SerialCommunication
                         radioButtonVerbonden.Checked = true;
                         buttonConnect.Text = "Disconnect";
                         labelStatus.Text = "Status: Connected";
+                        connectionLostNotified = false;
 
                         // zet controls weer aan omdat verbinding er is
                         try
@@ -238,9 +261,11 @@ namespace SerialCommunication
             try
             {
                 if (serialPortArduino == null || !serialPortArduino.IsOpen)
+                {
+                    VerbindingVerloren("Serial port gesloten of niet beschikbaar");
                     return;
+                }
 
-                // --- Helper om veilig een lijn te lezen ---
                 string ReadResponse()
                 {
                     try { return serialPortArduino.ReadLine().Trim(); }
@@ -250,75 +275,74 @@ namespace SerialCommunication
                 bool haveA0 = false, haveA1 = false;
                 double alarmTemp = 0.0, huidigeTemp = 0.0;
 
-                // ============================================================
-                // Read sensors with small delays and buffer discard to avoid inter-timer interference
-                // ============================================================
-                try { serialPortArduino.DiscardInBuffer(); } catch { }
-
-                // ANALOG 0: alarm temperatuur
+                // --- ANALOG 0 ---
+                serialPortArduino.DiscardInBuffer();
                 serialPortArduino.WriteLine("get a0");
-                Thread.Sleep(50);
+                Thread.Sleep(40);
                 string respA0 = ReadResponse();
 
                 if (respA0.Contains(":"))
                 {
-                    string[] parts = respA0.Split(':');
-                    if (double.TryParse(parts[1].Trim().Replace(',', '.'), NumberStyles.Float,
-                                        CultureInfo.InvariantCulture, out double rawA0))
+                    string[] p = respA0.Split(':');
+                    if (double.TryParse(p[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double raw))
                     {
-                        alarmTemp = (70.0 / 1023.0) * rawA0 - 10.0;
+                        alarmTemp = (70.0 / 1023.0) * raw - 10.0;
                         haveA0 = true;
                         labelAlarmTemp.Text = alarmTemp.ToString("0.0") + " °C";
                     }
                 }
 
-                // ANALOG 1: huidige temperatuur
+                // --- ANALOG 1 ---
                 serialPortArduino.WriteLine("get a1");
-                Thread.Sleep(50);
+                Thread.Sleep(40);
                 string respA1 = ReadResponse();
 
                 if (respA1.Contains(":"))
                 {
-                    string[] parts = respA1.Split(':');
-                    if (double.TryParse(parts[1].Trim().Replace(',', '.'), NumberStyles.Float,
-                                        CultureInfo.InvariantCulture, out double rawA1))
+                    string[] p = respA1.Split(':');
+                    if (double.TryParse(p[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double raw))
                     {
-                        huidigeTemp = (500.0 / 1023.0) * rawA1;
+                        huidigeTemp = (500.0 / 1023.0) * raw;
                         haveA1 = true;
                         labelHuidigTemp.Text = huidigeTemp.ToString("0.0") + " °C";
                     }
                 }
 
-                // DIGITAL 5: drukknop (Arduino stuurt: "5:1" (ingedrukt) of "5:0" (niet ingedrukt))
+                // --- DIGITAL 5: knop ---
                 serialPortArduino.WriteLine("digital 5");
-                Thread.Sleep(50);
+                Thread.Sleep(100);
                 string respD5 = ReadResponse();
 
                 int buttonValue = 0;
                 if (respD5.Contains(":"))
                 {
-                    string[] parts = respD5.Split(':');
-                    int.TryParse(parts[1].Trim(), out buttonValue);
+                    string[] p = respD5.Split(':');
+                    int.TryParse(p[1], out buttonValue);
                 }
 
                 bool rawButton = (buttonValue == 1);
 
                 // ============================================================
-                // Debounce + rising edge detectie
+                // EENVOUDIGE, SUPER BETROUWBARE DEBOUNCE + RISING EDGE
                 // ============================================================
-                DateTime now = DateTime.Now;
+                bool pressDetected = false;
 
                 if (rawButton != lastButtonState)
                 {
-                    lastButtonChange = now;
+                    lastButtonChange = DateTime.Now;
                     lastButtonState = rawButton;
                 }
 
-                bool stable = (now - lastButtonChange).TotalMilliseconds >= buttonStableMs;
-                bool effective = rawButton && stable;
+                if ((DateTime.Now - lastButtonChange).TotalMilliseconds > 40)
+                {
+                    if (lastStableButton != lastButtonState)
+                    {
+                        if (lastButtonState == true)
+                            pressDetected = true;   // RISING EDGE
 
-                bool risingEdge = effective && !lastEffectiveButton;
-                lastEffectiveButton = effective;
+                        lastStableButton = lastButtonState;
+                    }
+                }
 
                 // ============================================================
                 // TOESTANDSAUTOMAAT
@@ -331,22 +355,18 @@ namespace SerialCommunication
                         break;
 
                     case 1: // ALARM
-                        // automatisch reset naar OK als temperatuur onder alarm valt
                         if (haveA0 && haveA1 && huidigeTemp < alarmTemp)
                         {
                             toestand = 0;
                         }
-                        else if (risingEdge)
+                        else if (pressDetected)
                         {
-                            if (huidigeTemp < alarmTemp)
-                                toestand = 0;
-                            else
-                                toestand = 2;
+                            toestand = 2; // BEVESTIGD
                         }
                         break;
 
                     case 2: // BEVESTIGD
-                        if (huidigeTemp < alarmTemp)
+                        if (haveA0 && haveA1 && huidigeTemp < alarmTemp)
                             toestand = 0;
                         break;
                 }
@@ -354,15 +374,16 @@ namespace SerialCommunication
                 // ============================================================
                 // STATUS LABEL
                 // ============================================================
-                switch (toestand)
+                labelStatuss.Text = toestand switch
                 {
-                    case 0: labelStatuss.Text = "OK"; break;
-                    case 1: labelStatuss.Text = "ALARM"; break;
-                    case 2: labelStatuss.Text = "BEVESTIGD"; break;
-                }
+                    0 => "OK",
+                    1 => "ALARM",
+                    2 => "BEVESTIGD",
+                    _ => "?"
+                };
 
                 // ============================================================
-                // LED & BUZZER (ALTIJD STUREN)
+                // LED & BUZZER
                 // ============================================================
                 switch (toestand)
                 {
@@ -389,33 +410,35 @@ namespace SerialCommunication
         }
 
 
-
         private void timerOefening3_Tick(object sender, EventArgs e)
         {
             try
             {
-                if (serialPortArduino != null && serialPortArduino.IsOpen)
+                if (serialPortArduino == null || !serialPortArduino.IsOpen)
                 {
-                    // Clear any previous data
-                    try { serialPortArduino.ReadExisting(); } catch { }
-
-                    // digital 5
-                    serialPortArduino.WriteLine("digital 5");
-                    string antwoord5 = serialPortArduino.ReadLine().Trim();
-                    radioButtonDigital5.Checked = (antwoord5 == "1");
-
-                    // digital 6
-                    try { serialPortArduino.ReadExisting(); } catch { }
-                    serialPortArduino.WriteLine("digital 6");
-                    string antwoord6 = serialPortArduino.ReadLine().Trim();
-                    radioButtonDigital6.Checked = (antwoord6 == "1");
-
-                    // digital 7
-                    try { serialPortArduino.ReadExisting(); } catch { }
-                    serialPortArduino.WriteLine("digital 7");
-                    string antwoord7 = serialPortArduino.ReadLine().Trim();
-                    radioButtonDigital7.Checked = (antwoord7 == "1");
+                    VerbindingVerloren("Serial port gesloten of niet beschikbaar");
+                    return;
                 }
+
+                // Clear any previous data
+                try { serialPortArduino.ReadExisting(); } catch { }
+
+                // digital 5
+                serialPortArduino.WriteLine("digital 5");
+                string antwoord5 = serialPortArduino.ReadLine().Trim();
+                radioButtonDigital5.Checked = (antwoord5 == "1");
+
+                // digital 6
+                try { serialPortArduino.ReadExisting(); } catch { }
+                serialPortArduino.WriteLine("digital 6");
+                string antwoord6 = serialPortArduino.ReadLine().Trim();
+                radioButtonDigital6.Checked = (antwoord6 == "1");
+
+                // digital 7
+                try { serialPortArduino.ReadExisting(); } catch { }
+                serialPortArduino.WriteLine("digital 7");
+                string antwoord7 = serialPortArduino.ReadLine().Trim();
+                radioButtonDigital7.Checked = (antwoord7 == "1");
             }
             catch (Exception ex)
             {
@@ -427,22 +450,25 @@ namespace SerialCommunication
         {
             try
             {
-                if (serialPortArduino != null && serialPortArduino.IsOpen)
+                if (serialPortArduino == null || !serialPortArduino.IsOpen)
                 {
-                    // Clear previous data from Arduino
-                    try { serialPortArduino.ReadExisting(); } catch { }
-
-                    // Request analog 0 value
-                    serialPortArduino.WriteLine("analog 0");
-
-                    string antwoord = serialPortArduino.ReadLine().Trim();
-
-                    // extract numeric value if the reply contains extra text
-                    var match = System.Text.RegularExpressions.Regex.Match(antwoord, "\\d+");
-                    string value = match.Success ? match.Value : antwoord;
-
-                    labelAnalog0.Text = value;
+                    VerbindingVerloren("Serial port gesloten of niet beschikbaar");
+                    return;
                 }
+
+                // Clear previous data from Arduino
+                try { serialPortArduino.ReadExisting(); } catch { }
+
+                // Request analog 0 value
+                serialPortArduino.WriteLine("analog 0");
+
+                string antwoord = serialPortArduino.ReadLine().Trim();
+
+                // extract numeric value if the reply contains extra text
+                var match = System.Text.RegularExpressions.Regex.Match(antwoord, "\\d+");
+                string value = match.Success ? match.Value : antwoord;
+
+                labelAnalog0.Text = value;
             }
             catch (Exception ex)
             {
@@ -548,6 +574,11 @@ namespace SerialCommunication
             {
                 try { labelStatus.Text = "Error: " + ex.Message; } catch { }
             }
+        }
+
+        private void labelStatuss_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
