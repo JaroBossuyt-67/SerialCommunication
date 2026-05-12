@@ -251,9 +251,13 @@ namespace SerialCommunication
                 double alarmTemp = 0.0, huidigeTemp = 0.0;
 
                 // ============================================================
-                // ANALOG 0: alarm temperatuur
+                // Read sensors with small delays and buffer discard to avoid inter-timer interference
                 // ============================================================
+                try { serialPortArduino.DiscardInBuffer(); } catch { }
+
+                // ANALOG 0: alarm temperatuur
                 serialPortArduino.WriteLine("get a0");
+                Thread.Sleep(50);
                 string respA0 = ReadResponse();
 
                 if (respA0.Contains(":"))
@@ -268,10 +272,9 @@ namespace SerialCommunication
                     }
                 }
 
-                // ============================================================
                 // ANALOG 1: huidige temperatuur
-                // ============================================================
                 serialPortArduino.WriteLine("get a1");
+                Thread.Sleep(50);
                 string respA1 = ReadResponse();
 
                 if (respA1.Contains(":"))
@@ -286,11 +289,9 @@ namespace SerialCommunication
                     }
                 }
 
-                // ============================================================
-                // DIGITAL 5: drukknop
-                // Arduino stuurt: "5:1" (ingedrukt) of "5:0" (niet ingedrukt)
-                // ============================================================
+                // DIGITAL 5: drukknop (Arduino stuurt: "5:1" (ingedrukt) of "5:0" (niet ingedrukt))
                 serialPortArduino.WriteLine("digital 5");
+                Thread.Sleep(50);
                 string respD5 = ReadResponse();
 
                 int buttonValue = 0;
@@ -330,7 +331,12 @@ namespace SerialCommunication
                         break;
 
                     case 1: // ALARM
-                        if (risingEdge)
+                        // automatisch reset naar OK als temperatuur onder alarm valt
+                        if (haveA0 && haveA1 && huidigeTemp < alarmTemp)
+                        {
+                            toestand = 0;
+                        }
+                        else if (risingEdge)
                         {
                             if (huidigeTemp < alarmTemp)
                                 toestand = 0;
