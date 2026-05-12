@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,6 +17,18 @@ namespace SerialCommunication
 {
     public partial class Form1 : Form
     {
+        // toestand: 0 = OK, 1 = ALARM, 2 = BEVESTIGD
+        private int toestand = 0;
+
+        // knop debounce/helpers
+        private bool lastButtonState = false;
+        private System.DateTime lastButtonChange = System.DateTime.MinValue;
+        private const int buttonStableMs = 300; // ms
+        private bool lastEffectiveButton = false;
+
+        // houd vorige toestand bij om onnodige commando's te vermijden
+        private int vorigeToestand = -1;
+
         public Form1()
         {
             InitializeComponent();
@@ -30,6 +44,11 @@ namespace SerialCommunication
                 if (comboBoxPoort.Items.Count > 0) comboBoxPoort.SelectedIndex = 0;
 
                 comboBoxBaudrate.SelectedIndex = comboBoxBaudrate.Items.IndexOf("115200");
+
+                // initialiseer statuslabels
+                try { labelStatuss.Text = "OK"; } catch { }
+                try { labelAlarmTemp.Text = "-"; } catch { }
+                try { labelHuidigTemp.Text = "-"; } catch { }
             }
             catch (Exception)
             { }
@@ -173,7 +192,7 @@ namespace SerialCommunication
         {
             try
             {
-                if (tabControl.SelectedTab == tabPageOefening3)
+                if (tabPageTemperatuurAlarm.SelectedTab == tabPageOefening3)
                 {
                     timerOefening3.Enabled = true;
                 }
@@ -182,7 +201,7 @@ namespace SerialCommunication
                     timerOefening3.Enabled = false;
                 }
 
-                if (tabControl.SelectedTab == tabPageOefening4)
+                if (tabPageTemperatuurAlarm.SelectedTab == tabPageOefening4)
                 {
                     timerOefening4.Enabled = true;
                 }
@@ -191,7 +210,7 @@ namespace SerialCommunication
                     timerOefening4.Enabled = false;
                 }
 
-                if (tabControl.SelectedTab == tabPageOefening5)
+                if (tabPageTemperatuurAlarm.SelectedTab == tabPageOefening5)
                 {
                     timerOefening5.Enabled = true;
                 }
@@ -199,11 +218,171 @@ namespace SerialCommunication
                 {
                     timerOefening5.Enabled = false;
                 }
+
+                if (tabPageTemperatuurAlarm.SelectedTab == tabPage1)
+                {
+                    timerTemperatuurAlarm.Enabled = true;
+                }
+                else
+                {
+                    timerTemperatuurAlarm.Enabled = false;
+                }
             }
             catch (Exception)
             {
             }
         }
+
+        private void timerTemperatuurAlarm_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialPortArduino == null || !serialPortArduino.IsOpen)
+                    return;
+
+                // --- Helper om veilig een lijn te lezen ---
+                string ReadResponse()
+                {
+                    try { return serialPortArduino.ReadLine().Trim(); }
+                    catch { return ""; }
+                }
+
+                bool haveA0 = false, haveA1 = false;
+                double alarmTemp = 0.0, huidigeTemp = 0.0;
+
+                // ============================================================
+                // ANALOG 0: alarm temperatuur
+                // ============================================================
+                serialPortArduino.WriteLine("get a0");
+                string respA0 = ReadResponse();
+
+                if (respA0.Contains(":"))
+                {
+                    string[] parts = respA0.Split(':');
+                    if (double.TryParse(parts[1].Trim().Replace(',', '.'), NumberStyles.Float,
+                                        CultureInfo.InvariantCulture, out double rawA0))
+                    {
+                        alarmTemp = (70.0 / 1023.0) * rawA0 - 10.0;
+                        haveA0 = true;
+                        labelAlarmTemp.Text = alarmTemp.ToString("0.0") + " °C";
+                    }
+                }
+
+                // ============================================================
+                // ANALOG 1: huidige temperatuur
+                // ============================================================
+                serialPortArduino.WriteLine("get a1");
+                string respA1 = ReadResponse();
+
+                if (respA1.Contains(":"))
+                {
+                    string[] parts = respA1.Split(':');
+                    if (double.TryParse(parts[1].Trim().Replace(',', '.'), NumberStyles.Float,
+                                        CultureInfo.InvariantCulture, out double rawA1))
+                    {
+                        huidigeTemp = (500.0 / 1023.0) * rawA1;
+                        haveA1 = true;
+                        labelHuidigTemp.Text = huidigeTemp.ToString("0.0") + " °C";
+                    }
+                }
+
+                // ============================================================
+                // DIGITAL 5: drukknop
+                // Arduino stuurt: "5:1" (ingedrukt) of "5:0" (niet ingedrukt)
+                // ============================================================
+                serialPortArduino.WriteLine("digital 5");
+                string respD5 = ReadResponse();
+
+                int buttonValue = 0;
+                if (respD5.Contains(":"))
+                {
+                    string[] parts = respD5.Split(':');
+                    int.TryParse(parts[1].Trim(), out buttonValue);
+                }
+
+                bool rawButton = (buttonValue == 1);
+
+                // ============================================================
+                // Debounce + rising edge detectie
+                // ============================================================
+                DateTime now = DateTime.Now;
+
+                if (rawButton != lastButtonState)
+                {
+                    lastButtonChange = now;
+                    lastButtonState = rawButton;
+                }
+
+                bool stable = (now - lastButtonChange).TotalMilliseconds >= buttonStableMs;
+                bool effective = rawButton && stable;
+
+                bool risingEdge = effective && !lastEffectiveButton;
+                lastEffectiveButton = effective;
+
+                // ============================================================
+                // TOESTANDSAUTOMAAT
+                // ============================================================
+                switch (toestand)
+                {
+                    case 0: // OK
+                        if (haveA0 && haveA1 && huidigeTemp >= alarmTemp)
+                            toestand = 1;
+                        break;
+
+                    case 1: // ALARM
+                        if (risingEdge)
+                        {
+                            if (huidigeTemp < alarmTemp)
+                                toestand = 0;
+                            else
+                                toestand = 2;
+                        }
+                        break;
+
+                    case 2: // BEVESTIGD
+                        if (huidigeTemp < alarmTemp)
+                            toestand = 0;
+                        break;
+                }
+
+                // ============================================================
+                // STATUS LABEL
+                // ============================================================
+                switch (toestand)
+                {
+                    case 0: labelStatuss.Text = "OK"; break;
+                    case 1: labelStatuss.Text = "ALARM"; break;
+                    case 2: labelStatuss.Text = "BEVESTIGD"; break;
+                }
+
+                // ============================================================
+                // LED & BUZZER (ALTIJD STUREN)
+                // ============================================================
+                switch (toestand)
+                {
+                    case 0:
+                        serialPortArduino.WriteLine("set d2 low");
+                        serialPortArduino.WriteLine("set d3 low");
+                        break;
+
+                    case 1:
+                        serialPortArduino.WriteLine("set d2 high");
+                        serialPortArduino.WriteLine("set d3 high");
+                        break;
+
+                    case 2:
+                        serialPortArduino.WriteLine("set d2 high");
+                        serialPortArduino.WriteLine("set d3 low");
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                labelStatuss.Text = "Error: " + ex.Message;
+            }
+        }
+
+
 
         private void timerOefening3_Tick(object sender, EventArgs e)
         {

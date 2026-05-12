@@ -118,6 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="digital_out" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\digital out.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="thermostat" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\thermostat.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="analog_in" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\analog in.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -127,10 +133,7 @@
   <data name="digital_in" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\digital in.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="digital_out" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\digital out.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="thermostat" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\thermostat.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="temperatuuralarm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\temperatuuralarm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

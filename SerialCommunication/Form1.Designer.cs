@@ -33,10 +33,7 @@
             this.buttonConnect = new System.Windows.Forms.Button();
             this.labelPoort = new System.Windows.Forms.Label();
             this.comboBoxPoort = new System.Windows.Forms.ComboBox();
-            this.tabControl = new System.Windows.Forms.TabControl();
-            this.timerOefening3 = new System.Windows.Forms.Timer(this.components);
-            this.timerOefening4 = new System.Windows.Forms.Timer(this.components);
-            this.timerOefening5 = new System.Windows.Forms.Timer(this.components);
+            this.tabPageTemperatuurAlarm = new System.Windows.Forms.TabControl();
             this.tabPageInstellingen = new System.Windows.Forms.TabPage();
             this.checkBoxDtrEnable = new System.Windows.Forms.CheckBox();
             this.checkBoxRtsEnable = new System.Windows.Forms.CheckBox();
@@ -90,10 +87,22 @@
             this.labelGewensteTemp = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.labelStatuss = new System.Windows.Forms.Label();
+            this.labelHuidigTemp = new System.Windows.Forms.Label();
+            this.labelAlarmTemp = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.pictureBox6 = new System.Windows.Forms.PictureBox();
+            this.timerOefening3 = new System.Windows.Forms.Timer(this.components);
+            this.timerOefening4 = new System.Windows.Forms.Timer(this.components);
+            this.timerOefening5 = new System.Windows.Forms.Timer(this.components);
+            this.timerTemperatuurAlarm = new System.Windows.Forms.Timer(this.components);
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.serialPortArduino = new System.IO.Ports.SerialPort(this.components);
-            this.tabControl.SuspendLayout();
+            this.tabPageTemperatuurAlarm.SuspendLayout();
             this.tabPageInstellingen.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -112,6 +121,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             this.tabPageOefening5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
+            this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -121,7 +132,7 @@
             this.radioButtonVerbonden.AutoCheck = false;
             this.radioButtonVerbonden.AutoSize = true;
             this.radioButtonVerbonden.Location = new System.Drawing.Point(1447, 27);
-            this.radioButtonVerbonden.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonVerbonden.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonVerbonden.Name = "radioButtonVerbonden";
             this.radioButtonVerbonden.Size = new System.Drawing.Size(145, 29);
             this.radioButtonVerbonden.TabIndex = 8;
@@ -132,7 +143,7 @@
             // buttonConnect
             // 
             this.buttonConnect.Location = new System.Drawing.Point(384, 22);
-            this.buttonConnect.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.buttonConnect.Margin = new System.Windows.Forms.Padding(6);
             this.buttonConnect.Name = "buttonConnect";
             this.buttonConnect.Size = new System.Drawing.Size(150, 44);
             this.buttonConnect.TabIndex = 7;
@@ -155,30 +166,32 @@
             this.comboBoxPoort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxPoort.FormattingEnabled = true;
             this.comboBoxPoort.Location = new System.Drawing.Point(100, 25);
-            this.comboBoxPoort.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.comboBoxPoort.Margin = new System.Windows.Forms.Padding(6);
             this.comboBoxPoort.Name = "comboBoxPoort";
             this.comboBoxPoort.Size = new System.Drawing.Size(238, 33);
             this.comboBoxPoort.TabIndex = 5;
             this.comboBoxPoort.DropDown += new System.EventHandler(this.cboPoort_DropDown);
             // 
-            // tabControl
+            // tabPageTemperatuurAlarm
             // 
-            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tabPageTemperatuurAlarm.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl.Controls.Add(this.tabPageInstellingen);
-            this.tabControl.Controls.Add(this.tabPageOefening1);
-            this.tabControl.Controls.Add(this.tabPageOefening2);
-            this.tabControl.Controls.Add(this.tabPageOefening3);
-            this.tabControl.Controls.Add(this.tabPageOefening4);
-            this.tabControl.Controls.Add(this.tabPageOefening5);
-            this.tabControl.Location = new System.Drawing.Point(24, 102);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
-            this.tabControl.Name = "tabControl";
-            this.tabControl.SelectedIndex = 0;
-            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
-            this.tabControl.Size = new System.Drawing.Size(1568, 802);
-            this.tabControl.TabIndex = 9;
+            this.tabPageTemperatuurAlarm.Controls.Add(this.tabPageInstellingen);
+            this.tabPageTemperatuurAlarm.Controls.Add(this.tabPageOefening1);
+            this.tabPageTemperatuurAlarm.Controls.Add(this.tabPageOefening2);
+            this.tabPageTemperatuurAlarm.Controls.Add(this.tabPageOefening3);
+            this.tabPageTemperatuurAlarm.Controls.Add(this.tabPageOefening4);
+            this.tabPageTemperatuurAlarm.Controls.Add(this.tabPageOefening5);
+            this.tabPageTemperatuurAlarm.Controls.Add(this.tabPage1);
+            this.tabPageTemperatuurAlarm.Location = new System.Drawing.Point(24, 102);
+            this.tabPageTemperatuurAlarm.Margin = new System.Windows.Forms.Padding(6);
+            this.tabPageTemperatuurAlarm.Name = "tabPageTemperatuurAlarm";
+            this.tabPageTemperatuurAlarm.SelectedIndex = 0;
+            this.tabPageTemperatuurAlarm.Size = new System.Drawing.Size(1568, 802);
+            this.tabPageTemperatuurAlarm.TabIndex = 9;
+            this.tabPageTemperatuurAlarm.Tag = "Oefening 6";
+            this.tabPageTemperatuurAlarm.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
             // tabPageInstellingen
             // 
@@ -195,9 +208,9 @@
             this.tabPageInstellingen.Controls.Add(this.comboBoxBaudrate);
             this.tabPageInstellingen.Controls.Add(this.label4);
             this.tabPageInstellingen.Location = new System.Drawing.Point(8, 39);
-            this.tabPageInstellingen.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.tabPageInstellingen.Margin = new System.Windows.Forms.Padding(6);
             this.tabPageInstellingen.Name = "tabPageInstellingen";
-            this.tabPageInstellingen.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.tabPageInstellingen.Padding = new System.Windows.Forms.Padding(6);
             this.tabPageInstellingen.Size = new System.Drawing.Size(1552, 755);
             this.tabPageInstellingen.TabIndex = 2;
             this.tabPageInstellingen.Text = "Instellingen";
@@ -207,7 +220,7 @@
             // 
             this.checkBoxDtrEnable.AutoSize = true;
             this.checkBoxDtrEnable.Location = new System.Drawing.Point(794, 628);
-            this.checkBoxDtrEnable.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.checkBoxDtrEnable.Margin = new System.Windows.Forms.Padding(6);
             this.checkBoxDtrEnable.Name = "checkBoxDtrEnable";
             this.checkBoxDtrEnable.Size = new System.Drawing.Size(160, 29);
             this.checkBoxDtrEnable.TabIndex = 11;
@@ -218,7 +231,7 @@
             // 
             this.checkBoxRtsEnable.AutoSize = true;
             this.checkBoxRtsEnable.Location = new System.Drawing.Point(210, 628);
-            this.checkBoxRtsEnable.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.checkBoxRtsEnable.Margin = new System.Windows.Forms.Padding(6);
             this.checkBoxRtsEnable.Name = "checkBoxRtsEnable";
             this.checkBoxRtsEnable.Size = new System.Drawing.Size(159, 29);
             this.checkBoxRtsEnable.TabIndex = 10;
@@ -242,9 +255,9 @@
             this.groupBox3.Controls.Add(this.radioButtonHandshakeRTS);
             this.groupBox3.Controls.Add(this.radioButtonHandshakeNone);
             this.groupBox3.Location = new System.Drawing.Point(210, 478);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(6);
             this.groupBox3.Size = new System.Drawing.Size(754, 94);
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
@@ -253,7 +266,7 @@
             // 
             this.radioButtonHandshakeXonXoff.AutoSize = true;
             this.radioButtonHandshakeXonXoff.Location = new System.Drawing.Point(594, 36);
-            this.radioButtonHandshakeXonXoff.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonHandshakeXonXoff.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonHandshakeXonXoff.Name = "radioButtonHandshakeXonXoff";
             this.radioButtonHandshakeXonXoff.Size = new System.Drawing.Size(119, 29);
             this.radioButtonHandshakeXonXoff.TabIndex = 3;
@@ -265,7 +278,7 @@
             // 
             this.radioButtonHandshakeRTSXonXoff.AutoSize = true;
             this.radioButtonHandshakeRTSXonXoff.Location = new System.Drawing.Point(358, 36);
-            this.radioButtonHandshakeRTSXonXoff.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonHandshakeRTSXonXoff.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonHandshakeRTSXonXoff.Name = "radioButtonHandshakeRTSXonXoff";
             this.radioButtonHandshakeRTSXonXoff.Size = new System.Drawing.Size(161, 29);
             this.radioButtonHandshakeRTSXonXoff.TabIndex = 2;
@@ -277,7 +290,7 @@
             // 
             this.radioButtonHandshakeRTS.AutoSize = true;
             this.radioButtonHandshakeRTS.Location = new System.Drawing.Point(198, 36);
-            this.radioButtonHandshakeRTS.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonHandshakeRTS.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonHandshakeRTS.Name = "radioButtonHandshakeRTS";
             this.radioButtonHandshakeRTS.Size = new System.Drawing.Size(85, 29);
             this.radioButtonHandshakeRTS.TabIndex = 1;
@@ -290,7 +303,7 @@
             this.radioButtonHandshakeNone.AutoSize = true;
             this.radioButtonHandshakeNone.Checked = true;
             this.radioButtonHandshakeNone.Location = new System.Drawing.Point(30, 36);
-            this.radioButtonHandshakeNone.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonHandshakeNone.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonHandshakeNone.Name = "radioButtonHandshakeNone";
             this.radioButtonHandshakeNone.Size = new System.Drawing.Size(94, 29);
             this.radioButtonHandshakeNone.TabIndex = 0;
@@ -315,9 +328,9 @@
             this.groupBox2.Controls.Add(this.radioButtonStopbitsOne);
             this.groupBox2.Controls.Add(this.radioButtonStopbitsNone);
             this.groupBox2.Location = new System.Drawing.Point(210, 344);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(6);
             this.groupBox2.Size = new System.Drawing.Size(754, 94);
             this.groupBox2.TabIndex = 6;
             this.groupBox2.TabStop = false;
@@ -326,7 +339,7 @@
             // 
             this.radioButtonStopbitsTwo.AutoSize = true;
             this.radioButtonStopbitsTwo.Location = new System.Drawing.Point(466, 36);
-            this.radioButtonStopbitsTwo.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonStopbitsTwo.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonStopbitsTwo.Name = "radioButtonStopbitsTwo";
             this.radioButtonStopbitsTwo.Size = new System.Drawing.Size(55, 29);
             this.radioButtonStopbitsTwo.TabIndex = 3;
@@ -338,7 +351,7 @@
             // 
             this.radioButtonStopbitsOnePointFive.AutoSize = true;
             this.radioButtonStopbitsOnePointFive.Location = new System.Drawing.Point(316, 36);
-            this.radioButtonStopbitsOnePointFive.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonStopbitsOnePointFive.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonStopbitsOnePointFive.Name = "radioButtonStopbitsOnePointFive";
             this.radioButtonStopbitsOnePointFive.Size = new System.Drawing.Size(73, 29);
             this.radioButtonStopbitsOnePointFive.TabIndex = 2;
@@ -351,7 +364,7 @@
             this.radioButtonStopbitsOne.AutoSize = true;
             this.radioButtonStopbitsOne.Checked = true;
             this.radioButtonStopbitsOne.Location = new System.Drawing.Point(178, 36);
-            this.radioButtonStopbitsOne.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonStopbitsOne.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonStopbitsOne.Name = "radioButtonStopbitsOne";
             this.radioButtonStopbitsOne.Size = new System.Drawing.Size(55, 29);
             this.radioButtonStopbitsOne.TabIndex = 1;
@@ -363,7 +376,7 @@
             // 
             this.radioButtonStopbitsNone.AutoSize = true;
             this.radioButtonStopbitsNone.Location = new System.Drawing.Point(30, 36);
-            this.radioButtonStopbitsNone.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonStopbitsNone.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonStopbitsNone.Name = "radioButtonStopbitsNone";
             this.radioButtonStopbitsNone.Size = new System.Drawing.Size(55, 29);
             this.radioButtonStopbitsNone.TabIndex = 0;
@@ -389,9 +402,9 @@
             this.groupBox1.Controls.Add(this.radioButtonParityOdd);
             this.groupBox1.Controls.Add(this.radioButtonParityEven);
             this.groupBox1.Location = new System.Drawing.Point(210, 222);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(6);
             this.groupBox1.Size = new System.Drawing.Size(754, 94);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
@@ -400,7 +413,7 @@
             // 
             this.radioButtonParitySpace.AutoSize = true;
             this.radioButtonParitySpace.Location = new System.Drawing.Point(612, 36);
-            this.radioButtonParitySpace.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonParitySpace.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonParitySpace.Name = "radioButtonParitySpace";
             this.radioButtonParitySpace.Size = new System.Drawing.Size(104, 29);
             this.radioButtonParitySpace.TabIndex = 4;
@@ -412,7 +425,7 @@
             // 
             this.radioButtonParityMark.AutoSize = true;
             this.radioButtonParityMark.Location = new System.Drawing.Point(466, 36);
-            this.radioButtonParityMark.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonParityMark.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonParityMark.Name = "radioButtonParityMark";
             this.radioButtonParityMark.Size = new System.Drawing.Size(91, 29);
             this.radioButtonParityMark.TabIndex = 3;
@@ -425,7 +438,7 @@
             this.radioButtonParityNone.AutoSize = true;
             this.radioButtonParityNone.Checked = true;
             this.radioButtonParityNone.Location = new System.Drawing.Point(316, 36);
-            this.radioButtonParityNone.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonParityNone.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonParityNone.Name = "radioButtonParityNone";
             this.radioButtonParityNone.Size = new System.Drawing.Size(94, 29);
             this.radioButtonParityNone.TabIndex = 2;
@@ -437,7 +450,7 @@
             // 
             this.radioButtonParityOdd.AutoSize = true;
             this.radioButtonParityOdd.Location = new System.Drawing.Point(178, 36);
-            this.radioButtonParityOdd.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonParityOdd.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonParityOdd.Name = "radioButtonParityOdd";
             this.radioButtonParityOdd.Size = new System.Drawing.Size(83, 29);
             this.radioButtonParityOdd.TabIndex = 1;
@@ -449,7 +462,7 @@
             // 
             this.radioButtonParityEven.AutoSize = true;
             this.radioButtonParityEven.Location = new System.Drawing.Point(30, 36);
-            this.radioButtonParityEven.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonParityEven.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonParityEven.Name = "radioButtonParityEven";
             this.radioButtonParityEven.Size = new System.Drawing.Size(92, 29);
             this.radioButtonParityEven.TabIndex = 0;
@@ -470,7 +483,7 @@
             // numericUpDownDatabits
             // 
             this.numericUpDownDatabits.Location = new System.Drawing.Point(210, 142);
-            this.numericUpDownDatabits.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.numericUpDownDatabits.Margin = new System.Windows.Forms.Padding(6);
             this.numericUpDownDatabits.Maximum = new decimal(new int[] {
             9,
             0,
@@ -511,7 +524,7 @@
             "1000000",
             "2000000"});
             this.comboBoxBaudrate.Location = new System.Drawing.Point(210, 59);
-            this.comboBoxBaudrate.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.comboBoxBaudrate.Margin = new System.Windows.Forms.Padding(6);
             this.comboBoxBaudrate.Name = "comboBoxBaudrate";
             this.comboBoxBaudrate.Size = new System.Drawing.Size(238, 33);
             this.comboBoxBaudrate.TabIndex = 1;
@@ -534,9 +547,9 @@
             this.tabPageOefening1.Controls.Add(this.checkBoxDigital3);
             this.tabPageOefening1.Controls.Add(this.checkBoxDigital2);
             this.tabPageOefening1.Location = new System.Drawing.Point(8, 39);
-            this.tabPageOefening1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.tabPageOefening1.Margin = new System.Windows.Forms.Padding(6);
             this.tabPageOefening1.Name = "tabPageOefening1";
-            this.tabPageOefening1.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.tabPageOefening1.Padding = new System.Windows.Forms.Padding(6);
             this.tabPageOefening1.Size = new System.Drawing.Size(1552, 755);
             this.tabPageOefening1.TabIndex = 0;
             this.tabPageOefening1.Text = "Oefening 1";
@@ -546,7 +559,7 @@
             // 
             this.pictureBox1.Image = global::SerialCommunication.Properties.Resources.digital_out;
             this.pictureBox1.Location = new System.Drawing.Point(340, 33);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(6);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(1268, 672);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -557,7 +570,7 @@
             // 
             this.checkBoxDigital4.AutoSize = true;
             this.checkBoxDigital4.Location = new System.Drawing.Point(68, 350);
-            this.checkBoxDigital4.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.checkBoxDigital4.Margin = new System.Windows.Forms.Padding(6);
             this.checkBoxDigital4.Name = "checkBoxDigital4";
             this.checkBoxDigital4.Size = new System.Drawing.Size(122, 29);
             this.checkBoxDigital4.TabIndex = 2;
@@ -568,7 +581,7 @@
             // 
             this.checkBoxDigital3.AutoSize = true;
             this.checkBoxDigital3.Location = new System.Drawing.Point(66, 306);
-            this.checkBoxDigital3.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.checkBoxDigital3.Margin = new System.Windows.Forms.Padding(6);
             this.checkBoxDigital3.Name = "checkBoxDigital3";
             this.checkBoxDigital3.Size = new System.Drawing.Size(122, 29);
             this.checkBoxDigital3.TabIndex = 1;
@@ -579,7 +592,7 @@
             // 
             this.checkBoxDigital2.AutoSize = true;
             this.checkBoxDigital2.Location = new System.Drawing.Point(66, 259);
-            this.checkBoxDigital2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.checkBoxDigital2.Margin = new System.Windows.Forms.Padding(6);
             this.checkBoxDigital2.Name = "checkBoxDigital2";
             this.checkBoxDigital2.Size = new System.Drawing.Size(122, 29);
             this.checkBoxDigital2.TabIndex = 0;
@@ -597,9 +610,9 @@
             this.tabPageOefening2.Controls.Add(this.trackBarPWM9);
             this.tabPageOefening2.Controls.Add(this.pictureBox2);
             this.tabPageOefening2.Location = new System.Drawing.Point(8, 39);
-            this.tabPageOefening2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.tabPageOefening2.Margin = new System.Windows.Forms.Padding(6);
             this.tabPageOefening2.Name = "tabPageOefening2";
-            this.tabPageOefening2.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.tabPageOefening2.Padding = new System.Windows.Forms.Padding(6);
             this.tabPageOefening2.Size = new System.Drawing.Size(1552, 755);
             this.tabPageOefening2.TabIndex = 1;
             this.tabPageOefening2.Text = "Oefening 2";
@@ -619,7 +632,7 @@
             // 
             this.trackBarPWM11.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.trackBarPWM11.Location = new System.Drawing.Point(960, 639);
-            this.trackBarPWM11.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.trackBarPWM11.Margin = new System.Windows.Forms.Padding(6);
             this.trackBarPWM11.Maximum = 255;
             this.trackBarPWM11.Name = "trackBarPWM11";
             this.trackBarPWM11.Size = new System.Drawing.Size(494, 90);
@@ -640,7 +653,7 @@
             // 
             this.trackBarPWM10.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.trackBarPWM10.Location = new System.Drawing.Point(960, 567);
-            this.trackBarPWM10.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.trackBarPWM10.Margin = new System.Windows.Forms.Padding(6);
             this.trackBarPWM10.Maximum = 255;
             this.trackBarPWM10.Name = "trackBarPWM10";
             this.trackBarPWM10.Size = new System.Drawing.Size(494, 90);
@@ -661,7 +674,7 @@
             // 
             this.trackBarPWM9.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.trackBarPWM9.Location = new System.Drawing.Point(960, 494);
-            this.trackBarPWM9.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.trackBarPWM9.Margin = new System.Windows.Forms.Padding(6);
             this.trackBarPWM9.Maximum = 255;
             this.trackBarPWM9.Name = "trackBarPWM9";
             this.trackBarPWM9.Size = new System.Drawing.Size(494, 90);
@@ -673,7 +686,7 @@
             // 
             this.pictureBox2.Image = global::SerialCommunication.Properties.Resources.analog_out;
             this.pictureBox2.Location = new System.Drawing.Point(54, 31);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(6);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(1220, 672);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -687,9 +700,9 @@
             this.tabPageOefening3.Controls.Add(this.radioButtonDigital5);
             this.tabPageOefening3.Controls.Add(this.pictureBox3);
             this.tabPageOefening3.Location = new System.Drawing.Point(8, 39);
-            this.tabPageOefening3.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.tabPageOefening3.Margin = new System.Windows.Forms.Padding(6);
             this.tabPageOefening3.Name = "tabPageOefening3";
-            this.tabPageOefening3.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.tabPageOefening3.Padding = new System.Windows.Forms.Padding(6);
             this.tabPageOefening3.Size = new System.Drawing.Size(1552, 755);
             this.tabPageOefening3.TabIndex = 3;
             this.tabPageOefening3.Text = "Oefening 3";
@@ -700,7 +713,7 @@
             this.radioButtonDigital7.AutoCheck = false;
             this.radioButtonDigital7.AutoSize = true;
             this.radioButtonDigital7.Location = new System.Drawing.Point(98, 359);
-            this.radioButtonDigital7.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonDigital7.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonDigital7.Name = "radioButtonDigital7";
             this.radioButtonDigital7.Size = new System.Drawing.Size(121, 29);
             this.radioButtonDigital7.TabIndex = 3;
@@ -713,7 +726,7 @@
             this.radioButtonDigital6.AutoCheck = false;
             this.radioButtonDigital6.AutoSize = true;
             this.radioButtonDigital6.Location = new System.Drawing.Point(98, 294);
-            this.radioButtonDigital6.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonDigital6.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonDigital6.Name = "radioButtonDigital6";
             this.radioButtonDigital6.Size = new System.Drawing.Size(121, 29);
             this.radioButtonDigital6.TabIndex = 2;
@@ -726,7 +739,7 @@
             this.radioButtonDigital5.AutoCheck = false;
             this.radioButtonDigital5.AutoSize = true;
             this.radioButtonDigital5.Location = new System.Drawing.Point(98, 228);
-            this.radioButtonDigital5.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.radioButtonDigital5.Margin = new System.Windows.Forms.Padding(6);
             this.radioButtonDigital5.Name = "radioButtonDigital5";
             this.radioButtonDigital5.Size = new System.Drawing.Size(121, 29);
             this.radioButtonDigital5.TabIndex = 1;
@@ -738,7 +751,7 @@
             // 
             this.pictureBox3.Image = global::SerialCommunication.Properties.Resources.digital_in;
             this.pictureBox3.Location = new System.Drawing.Point(340, 33);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.pictureBox3.Margin = new System.Windows.Forms.Padding(6);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(1268, 672);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -750,9 +763,9 @@
             this.tabPageOefening4.Controls.Add(this.labelAnalog0);
             this.tabPageOefening4.Controls.Add(this.pictureBox4);
             this.tabPageOefening4.Location = new System.Drawing.Point(8, 39);
-            this.tabPageOefening4.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.tabPageOefening4.Margin = new System.Windows.Forms.Padding(6);
             this.tabPageOefening4.Name = "tabPageOefening4";
-            this.tabPageOefening4.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.tabPageOefening4.Padding = new System.Windows.Forms.Padding(6);
             this.tabPageOefening4.Size = new System.Drawing.Size(1552, 755);
             this.tabPageOefening4.TabIndex = 4;
             this.tabPageOefening4.Text = "Oefening 4";
@@ -773,7 +786,7 @@
             // 
             this.pictureBox4.Image = global::SerialCommunication.Properties.Resources.analog_in;
             this.pictureBox4.Location = new System.Drawing.Point(50, 34);
-            this.pictureBox4.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.pictureBox4.Margin = new System.Windows.Forms.Padding(6);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(1268, 672);
             this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -788,9 +801,9 @@
             this.tabPageOefening5.Controls.Add(this.label9);
             this.tabPageOefening5.Controls.Add(this.pictureBox5);
             this.tabPageOefening5.Location = new System.Drawing.Point(8, 39);
-            this.tabPageOefening5.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.tabPageOefening5.Margin = new System.Windows.Forms.Padding(6);
             this.tabPageOefening5.Name = "tabPageOefening5";
-            this.tabPageOefening5.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.tabPageOefening5.Padding = new System.Windows.Forms.Padding(6);
             this.tabPageOefening5.Size = new System.Drawing.Size(1552, 755);
             this.tabPageOefening5.TabIndex = 5;
             this.tabPageOefening5.Text = "Oefening 5";
@@ -844,12 +857,113 @@
             // 
             this.pictureBox5.Image = global::SerialCommunication.Properties.Resources.thermostat;
             this.pictureBox5.Location = new System.Drawing.Point(48, 34);
-            this.pictureBox5.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.pictureBox5.Margin = new System.Windows.Forms.Padding(6);
             this.pictureBox5.Name = "pictureBox5";
             this.pictureBox5.Size = new System.Drawing.Size(1268, 673);
             this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox5.TabIndex = 0;
             this.pictureBox5.TabStop = false;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.labelStatuss);
+            this.tabPage1.Controls.Add(this.labelHuidigTemp);
+            this.tabPage1.Controls.Add(this.labelAlarmTemp);
+            this.tabPage1.Controls.Add(this.label13);
+            this.tabPage1.Controls.Add(this.label12);
+            this.tabPage1.Controls.Add(this.label10);
+            this.tabPage1.Controls.Add(this.pictureBox6);
+            this.tabPage1.Location = new System.Drawing.Point(8, 39);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(1552, 755);
+            this.tabPage1.TabIndex = 6;
+            this.tabPage1.Text = "oefeing 6";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // labelStatuss
+            // 
+            this.labelStatuss.AutoSize = true;
+            this.labelStatuss.Location = new System.Drawing.Point(974, 398);
+            this.labelStatuss.Name = "labelStatuss";
+            this.labelStatuss.Size = new System.Drawing.Size(82, 25);
+            this.labelStatuss.TabIndex = 6;
+            this.labelStatuss.Text = "label16";
+            // 
+            // labelHuidigTemp
+            // 
+            this.labelHuidigTemp.AutoSize = true;
+            this.labelHuidigTemp.Location = new System.Drawing.Point(974, 351);
+            this.labelHuidigTemp.Name = "labelHuidigTemp";
+            this.labelHuidigTemp.Size = new System.Drawing.Size(82, 25);
+            this.labelHuidigTemp.TabIndex = 5;
+            this.labelHuidigTemp.Text = "label15";
+            // 
+            // labelAlarmTemp
+            // 
+            this.labelAlarmTemp.AutoSize = true;
+            this.labelAlarmTemp.Location = new System.Drawing.Point(974, 306);
+            this.labelAlarmTemp.Name = "labelAlarmTemp";
+            this.labelAlarmTemp.Size = new System.Drawing.Size(82, 25);
+            this.labelAlarmTemp.TabIndex = 4;
+            this.labelAlarmTemp.Text = "label14";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(759, 398);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(73, 25);
+            this.label13.TabIndex = 3;
+            this.label13.Text = "Status";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(759, 351);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(213, 25);
+            this.label12.TabIndex = 2;
+            this.label12.Text = "Huidige Temperatuur";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(759, 306);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(195, 25);
+            this.label10.TabIndex = 1;
+            this.label10.Text = "Alarm Temperatuur";
+            // 
+            // pictureBox6
+            // 
+            this.pictureBox6.Image = global::SerialCommunication.Properties.Resources.temperatuuralarm;
+            this.pictureBox6.Location = new System.Drawing.Point(49, 28);
+            this.pictureBox6.Name = "pictureBox6";
+            this.pictureBox6.Size = new System.Drawing.Size(704, 512);
+            this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox6.TabIndex = 0;
+            this.pictureBox6.TabStop = false;
+            // 
+            // timerOefening3
+            // 
+            this.timerOefening3.Interval = 1000;
+            this.timerOefening3.Tick += new System.EventHandler(this.timerOefening3_Tick);
+            // 
+            // timerOefening4
+            // 
+            this.timerOefening4.Interval = 1000;
+            this.timerOefening4.Tick += new System.EventHandler(this.timerOefening4_Tick);
+            // 
+            // timerOefening5
+            // 
+            this.timerOefening5.Interval = 1000;
+            this.timerOefening5.Tick += new System.EventHandler(this.timerOefening5_Tick);
+            // 
+            // timerTemperatuurAlarm
+            // 
+            this.timerTemperatuurAlarm.Interval = 1000;
+            this.timerTemperatuurAlarm.Tick += new System.EventHandler(this.timerTemperatuurAlarm_Tick);
             // 
             // statusStrip
             // 
@@ -873,40 +987,22 @@
             this.serialPortArduino.ReadTimeout = 1000;
             this.serialPortArduino.WriteTimeout = 1000;
             // 
-            // timerOefening3
-            // 
-            this.timerOefening3.Interval = 1000;
-            this.timerOefening3.Enabled = false;
-            this.timerOefening3.Tick += new System.EventHandler(this.timerOefening3_Tick);
-            // 
-            // timerOefening4
-            // 
-            this.timerOefening4.Interval = 1000;
-            this.timerOefening4.Enabled = false;
-            this.timerOefening4.Tick += new System.EventHandler(this.timerOefening4_Tick);
-            // 
-            // timerOefening5
-            // 
-            this.timerOefening5.Interval = 1000;
-            this.timerOefening5.Enabled = false;
-            this.timerOefening5.Tick += new System.EventHandler(this.timerOefening5_Tick);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1616, 952);
             this.Controls.Add(this.statusStrip);
-            this.Controls.Add(this.tabControl);
+            this.Controls.Add(this.tabPageTemperatuurAlarm);
             this.Controls.Add(this.radioButtonVerbonden);
             this.Controls.Add(this.buttonConnect);
             this.Controls.Add(this.labelPoort);
             this.Controls.Add(this.comboBoxPoort);
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "Form1";
             this.Text = "BZL seriële communicatie Jaro Bossuyt";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.tabControl.ResumeLayout(false);
+            this.tabPageTemperatuurAlarm.ResumeLayout(false);
             this.tabPageInstellingen.ResumeLayout(false);
             this.tabPageInstellingen.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -933,6 +1029,9 @@
             this.tabPageOefening5.ResumeLayout(false);
             this.tabPageOefening5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -946,7 +1045,7 @@
         internal System.Windows.Forms.Button buttonConnect;
         internal System.Windows.Forms.Label labelPoort;
         internal System.Windows.Forms.ComboBox comboBoxPoort;
-        internal System.Windows.Forms.TabControl tabControl;
+        internal System.Windows.Forms.TabControl tabPageTemperatuurAlarm;
         internal System.Windows.Forms.TabPage tabPageInstellingen;
         internal System.Windows.Forms.CheckBox checkBoxDtrEnable;
         internal System.Windows.Forms.CheckBox checkBoxRtsEnable;
@@ -1005,7 +1104,16 @@
         private System.Windows.Forms.Timer timerOefening3;
         private System.Windows.Forms.Timer timerOefening4;
         private System.Windows.Forms.Timer timerOefening5;
+        private System.Windows.Forms.Timer timerTemperatuurAlarm;
         private System.IO.Ports.SerialPort serialPortArduino;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.PictureBox pictureBox6;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label labelStatuss;
+        private System.Windows.Forms.Label labelHuidigTemp;
+        private System.Windows.Forms.Label labelAlarmTemp;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label12;
     }
 }
 
